@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useSite } from "../store";
 import { useActivity } from "../activity";
+import { useAuth } from "../auth";
 import { Reveal, SectionHead, fa, money } from "../ui";
 import { IcCheck, IcChat, IcClock, IcPhone, IcSpark } from "../icons";
 
@@ -9,8 +10,14 @@ type FormState = { name: string; phone: string; group: string; service: string }
 export default function Consulting() {
   const { site } = useSite();
   const activity = useActivity();
+  const { user } = useAuth();
   const formRef = useRef<HTMLDivElement>(null);
-  const [form, setForm] = useState<FormState>({ name: "", phone: "", group: "تجربی", service: site.services[0]?.title ?? "" });
+  const [form, setForm] = useState<FormState>({
+    name: user?.name ?? "",
+    phone: user?.phone ?? "",
+    group: user?.group || "تجربی",
+    service: site.services[0]?.title ?? "",
+  });
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [done, setDone] = useState<string | null>(null);
 
@@ -171,7 +178,12 @@ export default function Consulting() {
                     <button
                       onClick={() => {
                         setDone(null);
-                        setForm({ name: "", phone: "", group: "تجربی", service: site.services[0]?.title ?? "" });
+                        setForm({
+                          name: user?.name ?? "",
+                          phone: user?.phone ?? "",
+                          group: user?.group || "تجربی",
+                          service: site.services[0]?.title ?? "",
+                        });
                       }}
                       className="mt-6 h-11 px-6 rounded-xl bg-ink text-paper font-bold border-2 border-ink hover:bg-coral transition-colors"
                     >

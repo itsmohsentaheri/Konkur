@@ -192,6 +192,18 @@ export const IcWhatsapp = ({ className }: { className?: string }) => (
     <path d="M9 8.8c-.4 1.7 2.6 6 5.8 6.2.9 0 1.7-.5 1.7-1.3 0-.6-1-1.2-1.8-1.5-.5-.2-1 .3-1.3.5-.9-.3-2.2-1.6-2.4-2.5.3-.3.7-.7.5-1.2C11.3 8.3 9.2 8 9 8.8Z" />
   </I>
 );
+export const IcLock = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <rect x="5" y="10.5" width="14" height="9.5" rx="2" />
+    <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
+    <circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none" />
+  </I>
+);
+export const IcMinus = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <path d="M6 12h12" />
+  </I>
+);
 export const IcUser = ({ className }: { className?: string }) => (
   <I className={className}>
     <circle cx="12" cy="8" r="3.6" />

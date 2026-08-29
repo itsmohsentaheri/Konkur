@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { NAV_LINKS } from "../data";
 import { fa } from "../ui";
-import { IcCart, IcGear, IcGrid, IcMenu, IcUser, IcX, IcPencil } from "../icons";
+import { useAuth } from "../auth";
+import { IcCart, IcGear, IcMenu, IcUser, IcX, IcPencil } from "../icons";
 
 export function Logo({ dark = false }: { dark?: boolean }) {
   return (
@@ -18,11 +19,92 @@ export function Logo({ dark = false }: { dark?: boolean }) {
   );
 }
 
-export default function Nav({ cartCount }: { cartCount: number }) {
+function ProfileMenu() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [dash, setDash] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  if (!user) {
+    return (
+      <Link
+        to="/auth"
+        className="inline-flex items-center gap-2 h-11 px-4 rounded-xl bg-ink text-paper font-bold text-[15px] border-2 border-ink hover:bg-coral hover:-translate-y-0.5 shadow-hard-sm transition-all duration-300"
+      >
+        <IcUser className="w-4.5 h-4.5" />
+        <span className="hidden sm:inline">ورود / ثبت‌نام</span>
+      </Link>
+    );
+  }
+
+  const isAdmin = user.role === "admin";
+  const dashTo = isAdmin ? "/dashboard/admin" : "/dashboard/student";
+  const initial = user.name.trim().charAt(0) || "ک";
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="حساب کاربری"
+        aria-expanded={open}
+        className="flex items-center gap-2 h-11 pl-2.5 pr-3 rounded-xl border-2 border-ink bg-saffron hover:-translate-y-0.5 shadow-hard-sm transition-all duration-300"
+      >
+        <span className="grid place-items-center w-8 h-8 rounded-lg bg-ink text-saffron font-display text-lg leading-none">
+          {initial}
+        </span>
+        <span className="hidden md:block text-right">
+          <span className="block text-[13px] font-bold text-ink leading-tight max-w-28 truncate">{user.name}</span>
+          <span className="block text-[10px] font-semibold text-ink/60 leading-tight">{isAdmin ? "مدیر" : "داوطلب"}</span>
+        </span>
+      </button>
+      <div
+        className={`absolute top-full left-0 pt-3 transition-all duration-300 ${
+          open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
+        }`}
+      >
+        <div className="w-52 bg-card border-2 border-ink rounded-xl shadow-hard-sm overflow-hidden divide-y-2 divide-ink/10">
+          <Link
+            to={dashTo}
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 px-4 py-3.5 hover:bg-saffron/40 transition-colors"
+          >
+            <span className={`grid place-items-center w-9 h-9 rounded-lg border-2 border-ink ${isAdmin ? "bg-ink text-saffron" : "bg-saffron text-ink"}`}>
+              {isAdmin ? <IcGear className="w-4.5 h-4.5" /> : <IcUser className="w-4.5 h-4.5" />}
+            </span>
+            <span className="text-sm font-bold text-ink">داشبورد من</span>
+          </Link>
+          <button
+            onClick={() => {
+              setOpen(false);
+              logout();
+              navigate("/");
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-coral/20 transition-colors text-right"
+          >
+            <span className="grid place-items-center w-9 h-9 rounded-lg border-2 border-ink/20 text-coral">
+              <IcX className="w-4.5 h-4.5" />
+            </span>
+            <span className="text-sm font-bold text-coral">خروج از حساب</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Nav({ cartCount, onOpenCart }: { cartCount: number; onOpenCart: () => void }) {
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     const onScroll = () => {
@@ -37,7 +119,7 @@ export default function Nav({ cartCount }: { cartCount: number }) {
 
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `relative text-[15px] transition-colors after:absolute after:-bottom-1.5 after:right-0 after:h-[3px] after:bg-saffron after:transition-all after:duration-300 ${
-      isActive ? "font-bold text-ink after:w-full" : "font-semibold text-ink/75 hover:text-ink hover:after:w-full"
+      isActive ? "font-bold text-ink after:w-full" : "font-semibold text-ink/75 hover:text-ink hover:after-w-full"
     }`;
 
   return (
@@ -56,48 +138,11 @@ export default function Nav({ cartCount }: { cartCount: number }) {
               </NavLink>
             </li>
           ))}
-          <li className="relative" onMouseEnter={() => setDash(true)} onMouseLeave={() => setDash(false)}>
-            <button
-              onClick={() => setDash((v) => !v)}
-              aria-expanded={dash}
-              className={`flex items-center gap-1.5 text-[15px] transition-colors ${dash ? "font-bold text-ink" : "font-semibold text-ink/75 hover:text-ink"}`}
-            >
-              <IcGrid className="w-4.5 h-4.5" />
-              داشبوردها
-              <svg viewBox="0 0 24 24" className={`w-3.5 h-3.5 transition-transform duration-300 ${dash ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-            <div
-              className={`absolute top-full right-0 pt-3 transition-all duration-300 ${dash ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"}`}
-            >
-              <div className="w-56 bg-card border-2 border-ink rounded-xl shadow-hard-sm overflow-hidden divide-y-2 divide-ink/10">
-                <Link to="/dashboard/student" onClick={() => setDash(false)} className="flex items-center gap-3 px-4 py-3.5 hover:bg-saffron/40 transition-colors">
-                  <span className="grid place-items-center w-9 h-9 rounded-lg bg-saffron border-2 border-ink">
-                    <IcUser className="w-4.5 h-4.5" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-bold text-ink leading-tight">داشبورد دانش‌آموز</span>
-                    <span className="block text-[10px] font-semibold text-muted mt-0.5">کلاس‌ها، سفارش‌ها و رزروها</span>
-                  </span>
-                </Link>
-                <Link to="/dashboard/admin" onClick={() => setDash(false)} className="flex items-center gap-3 px-4 py-3.5 hover:bg-saffron/40 transition-colors">
-                  <span className="grid place-items-center w-9 h-9 rounded-lg bg-ink text-saffron border-2 border-ink">
-                    <IcGear className="w-4.5 h-4.5" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-bold text-ink leading-tight">داشبورد ادمین</span>
-                    <span className="block text-[10px] font-semibold text-muted mt-0.5">آمار، صندوق و وضعیت‌ها</span>
-                  </span>
-                </Link>
-              </div>
-            </div>
-          </li>
         </ul>
         <div className="flex items-center gap-3">
-          <Link
-            to="/dashboard/student"
-            aria-label="سبد خرید و داشبورد دانش‌آموز"
+          <button
+            onClick={onOpenCart}
+            aria-label="سبد خرید"
             className="relative grid place-items-center w-11 h-11 rounded-xl border-2 border-ink bg-card hover:bg-saffron hover:-translate-y-0.5 transition-all duration-300"
           >
             <IcCart className="w-5.5 h-5.5" />
@@ -106,13 +151,14 @@ export default function Nav({ cartCount }: { cartCount: number }) {
                 {fa(cartCount)}
               </span>
             )}
-          </Link>
+          </button>
           <Link
             to="/consulting"
             className="hidden md:inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-ink text-paper font-bold text-[15px] border-2 border-ink hover:bg-coral hover:-translate-y-0.5 shadow-hard-sm transition-all duration-300"
           >
             رزرو مشاوره
           </Link>
+          <ProfileMenu />
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label="منو"
@@ -123,7 +169,7 @@ export default function Nav({ cartCount }: { cartCount: number }) {
         </div>
       </nav>
       {/* mobile menu */}
-      <div className={`lg:hidden overflow-hidden transition-all duration-400 ${open ? "max-h-[420px]" : "max-h-0"}`}>
+      <div className={`lg:hidden overflow-hidden transition-all duration-400 ${open ? "max-h-[480px]" : "max-h-0"}`}>
         <ul className="px-4 pb-5 pt-2 space-y-1 bg-paper border-t-2 border-ink/10">
           <li>
             <NavLink
@@ -150,23 +196,26 @@ export default function Nav({ cartCount }: { cartCount: number }) {
               </NavLink>
             </li>
           ))}
-          <li className="grid grid-cols-2 gap-2 pt-2">
-            <Link
-              to="/dashboard/student"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-ink bg-saffron text-ink font-bold text-sm"
-            >
-              <IcUser className="w-4.5 h-4.5" />
-              داشبورد دانش‌آموز
-            </Link>
-            <Link
-              to="/dashboard/admin"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ink text-paper font-bold text-sm border-2 border-ink"
-            >
-              <IcGear className="w-4.5 h-4.5 text-saffron" />
-              داشبورد ادمین
-            </Link>
+          <li className="pt-2">
+            {user ? (
+              <Link
+                to={user.role === "admin" ? "/dashboard/admin" : "/dashboard/student"}
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ink text-paper font-bold border-2 border-ink"
+              >
+                <IcUser className="w-4.5 h-4.5 text-saffron" />
+                داشبورد من
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ink text-paper font-bold border-2 border-ink"
+              >
+                <IcUser className="w-4.5 h-4.5 text-saffron" />
+                ورود / ثبت‌نام
+              </Link>
+            )}
           </li>
           <li>
             <Link
