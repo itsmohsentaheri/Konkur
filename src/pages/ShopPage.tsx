@@ -2,11 +2,18 @@ import Products from "../components/Products";
 import CrossLinks from "../components/CrossLinks";
 import { PageHero, fa } from "../ui";
 import { useSite } from "../store";
+import { Seo, jsonLd } from "../seo";
 
 export default function ShopPage({ onAdd }: { onAdd: (item: { title: string; price: number }) => void }) {
   const { site } = useSite();
   return (
     <>
+      <Seo
+        title="فروشگاه محصولات کنکوری؛ جزوه، کتاب تست و آزمون | رتبه‌شو"
+        description="خرید جزوه‌های طلایی، کتاب‌های تست، فلش‌کارت و آزمون‌های شبیه‌ساز کنکور ۱۴۰۵ با ضمانت بازگشت ۷ روزه و آپدیت رایگان."
+        path="/shop"
+        jsonLd={[jsonLd.breadcrumb([["خانه", "/"], ["فروشگاه", "/shop"]]), jsonLd.products(site.products)]}
+      />
       <PageHero
         crumb="فروشگاه"
         kicker="محصولات کنکوری"

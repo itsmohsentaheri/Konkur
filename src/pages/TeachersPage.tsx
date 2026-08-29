@@ -2,11 +2,18 @@ import CrossLinks from "../components/CrossLinks";
 import { Teachers, Testimonials } from "../components/People";
 import { PageHero, fa } from "../ui";
 import { useSite } from "../store";
+import { Seo, jsonLd } from "../seo";
 
 export default function TeachersPage() {
   const { site } = useSite();
   return (
     <>
+      <Seo
+        title="اساتید رتبه‌برتر کنکور و روایت قبولی‌ها | رتبه‌شو"
+        description="آشنایی با اساتید رتبه‌شو؛ کسانی که خودشان رتبه‌های برتر کنکور بوده‌اند و مسیر قبولی را قدم‌به‌قدم پیموده‌اند."
+        path="/teachers"
+        jsonLd={jsonLd.breadcrumb([["خانه", "/"], ["اساتید و قبولی‌ها", "/teachers"]])}
+      />
       <PageHero
         crumb="اساتید"
         kicker="اساتید و قبولی‌ها"

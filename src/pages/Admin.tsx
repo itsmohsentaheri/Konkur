@@ -1,7 +1,9 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useSite } from "../store";
+import { useAuth } from "../auth";
 import { fa } from "../ui";
+import { Seo } from "../seo";
 import { PRODUCT_FILTERS } from "../data";
 import {
   IcArrow,
@@ -11,6 +13,7 @@ import {
   IcChat,
   IcCheck,
   IcGear,
+  IcLock,
   IcPencil,
   IcPlus,
   IcSpark,
@@ -756,15 +759,39 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-export default function Admin() {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem("rs-admin") === "1");
-  if (!authed) return <Login onOk={() => setAuthed(true)} />;
+function NeedAdmin() {
   return (
-    <Dashboard
-      onLogout={() => {
-        sessionStorage.removeItem("rs-admin");
-        setAuthed(false);
-      }}
-    />
+    <section className="pt-[72px] min-h-screen bg-ink bg-grid-dark grid place-items-center px-4 py-16">
+      <div className="max-w-md w-full bg-card border-2 border-ink rounded-2xl shadow-hard-saffron p-8 text-center">
+        <span className="grid place-items-center w-16 h-16 mx-auto rounded-2xl bg-coral text-paper border-2 border-ink">
+          <IcLock className="w-8 h-8" />
+        </span>
+        <h1 className="font-display text-3xl text-ink mt-5">دسترسی فقط برای ادمین</h1>
+        <p className="text-sm font-semibold text-muted mt-2 leading-7">
+          برای ویرایش محتوای سایت باید با حساب مدیر وارد شوی. اگر حساب دانش‌آموز داری، این بخش برای تو نیست.
+        </p>
+        <Link
+          to="/auth"
+          className="mt-6 inline-flex items-center justify-center w-full h-13 py-3.5 rounded-xl bg-ink text-paper font-bold border-2 border-ink shadow-hard-saffron hover:-translate-y-0.5 transition-all duration-300"
+        >
+          ورود با حساب ادمین
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+export default function Admin() {
+  const { user, logout } = useAuth();
+  if (!user || user.role !== "admin") return <NeedAdmin />;
+  return (
+    <>
+      <Seo title="پنل مدیریت محتوا | رتبه‌شو" description="پنل ویرایش محتوای سایت رتبه‌شو" path="/admin" noindex />
+      <Dashboard
+        onLogout={() => {
+          void logout();
+        }}
+      />
+    </>
   );
 }

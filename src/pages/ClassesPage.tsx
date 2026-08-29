@@ -1,12 +1,19 @@
 import Classes from "../components/Classes";
 import CrossLinks from "../components/CrossLinks";
 import { PageHero, fa } from "../ui";
+import { Seo, jsonLd } from "../seo";
 import { useSite } from "../store";
 
 export default function ClassesPage() {
   const { site } = useSite();
   return (
     <>
+      <Seo
+        title="کلاس‌های آموزشی کنکور ۱۴۰۵ | رتبه‌شو"
+        description="کلاس‌های تخصصی زیست، شیمی، ریاضی، فیزیک، ادبیات و عربی برای داوطلبان تجربی، ریاضی و انسانی با اساتید رتبه‌برتر کنکور."
+        path="/classes"
+        jsonLd={[jsonLd.breadcrumb([["خانه", "/"], ["کلاس‌ها", "/classes"]]), jsonLd.courses(site.classes)]}
+      />
       <PageHero
         crumb="کلاس‌ها"
         kicker="کلاس‌های آموزشی"

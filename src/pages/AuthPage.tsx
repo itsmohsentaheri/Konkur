@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useActivity } from "../activity";
 import { fa } from "../ui";
+import { Seo } from "../seo";
 import { Logo } from "../components/Nav";
 import { IcArrow, IcChat, IcCheck, IcClock, IcSpark, IcUser } from "../icons";
 
@@ -40,10 +41,10 @@ export default function AuthPage() {
     }
   }, [busy, user, navigate]);
 
-  const submitSignup = (e: FormEvent) => {
+  const submitSignup = async (e: FormEvent) => {
     e.preventDefault();
     setErr(null);
-    const res = signup(signupForm);
+    const res = await signup(signupForm);
     if (res) {
       setErr(res);
       return;
@@ -52,10 +53,10 @@ export default function AuthPage() {
     setBusy(true);
   };
 
-  const finishLogin = (e: FormEvent) => {
+  const finishLogin = async (e: FormEvent) => {
     e.preventDefault();
     setErr(null);
-    const res = login(loginForm);
+    const res = await login(loginForm);
     if (res) {
       setErr(res);
       return;
@@ -65,6 +66,12 @@ export default function AuthPage() {
 
   return (
     <section className="min-h-screen bg-ink bg-grid-dark text-paper flex">
+      <Seo
+        title="ورود و ثبت‌نام | رتبه‌شو"
+        description="ورود به حساب کاربری یا ثبت‌نام در رتبه‌شو برای دسترسی به داشبورد دانش‌آموز، پیگیری سفارش‌ها و رزرو مشاوره."
+        path="/auth"
+        noindex
+      />
       {/* brand panel */}
       <div className="relative hidden lg:flex flex-col justify-between w-[46%] p-12 overflow-hidden border-l-2 border-inkline">
         <div className="pointer-events-none absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-saffron/15 blur-3xl" />

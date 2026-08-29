@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PageHero, Reveal, fa, money, useCountdown } from "../ui";
 import { useSite } from "../store";
 import { useActivity, todayWeekIndex } from "../activity";
+import { Seo } from "../seo";
 import { useAuth } from "../auth";
 import {
   IcArrow,
@@ -452,6 +453,7 @@ export default function StudentDashboard() {
 
   return (
     <>
+      <Seo title="داشبورد من | رتبه‌شو" description="داشبورد شخصی دانش‌آموز رتبه‌شو" path="/dashboard/student" noindex />
       <PageHero
         crumb="داشبورد من"
         kicker={user.role === "admin" ? "پنل مدیریت" : "داشبورد دانش‌آموز"}

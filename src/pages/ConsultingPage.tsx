@@ -1,12 +1,19 @@
 import Consulting from "../components/Consulting";
 import CrossLinks from "../components/CrossLinks";
 import { PageHero, fa } from "../ui";
+import { Seo, jsonLd } from "../seo";
 import { useSite } from "../store";
 
 export default function ConsultingPage() {
   const { site } = useSite();
   return (
     <>
+      <Seo
+        title="مشاوره کنکور و انتخاب رشته تخصصی | رتبه‌شو"
+        description="مشاوره خصوصی انتخاب رشته، تحلیل کارنامه و تراز، برنامه‌ریزی مطالعه و پکیج همراهی کامل تا اعلام نتایج — جلسه اول رایگان."
+        path="/consulting"
+        jsonLd={[jsonLd.breadcrumb([["خانه", "/"], ["مشاوره و انتخاب رشته", "/consulting"]]), jsonLd.services(site.services)]}
+      />
       <PageHero
         crumb="مشاوره"
         kicker="مشاوره و انتخاب رشته"
