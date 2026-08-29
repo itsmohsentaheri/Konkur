@@ -1,10 +1,13 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { NAV_LINKS } from "../data";
 import { fa } from "../ui";
+import { useSite } from "../store";
 import { Logo } from "./Nav";
 import {
   IcArrow,
   IcCheck,
+  IcGear,
   IcInstagram,
   IcMail,
   IcPhone,
@@ -15,6 +18,7 @@ import {
 } from "../icons";
 
 export default function Footer() {
+  const { site } = useSite();
   const [email, setEmail] = useState("");
   const [subState, setSubState] = useState<"idle" | "ok" | "err">("idle");
 
@@ -40,13 +44,13 @@ export default function Footer() {
               همین امروز یک جلسه مشاورهٔ رایگان بگیر و نقشهٔ راهت را ببین.
             </p>
           </div>
-          <a
-            href="#consulting"
+          <Link
+            to="/consulting"
             className="group inline-flex items-center gap-3 h-14 px-8 rounded-xl bg-saffron text-ink font-bold text-lg border-2 border-ink shadow-hard-sm hover:-translate-y-1 transition-all duration-300 shrink-0"
           >
             شروع با مشاوره رایگان
             <IcArrow className="w-5 h-5 group-hover:-translate-x-1.5 transition-transform" />
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -59,10 +63,10 @@ export default function Footer() {
           </p>
           <div className="mt-6 flex items-center gap-3">
             {[
-              { icon: <IcInstagram className="w-5 h-5" />, label: "اینستاگرام", href: "#top" },
-              { icon: <IcTelegram className="w-5 h-5" />, label: "تلگرام", href: "#top" },
-              { icon: <IcYoutube className="w-5 h-5" />, label: "یوتیوب", href: "#top" },
-              { icon: <IcWhatsapp className="w-5 h-5" />, label: "واتس‌اپ", href: "#top" },
+              { icon: <IcInstagram className="w-5 h-5" />, label: "اینستاگرام", href: "https://instagram.com/ratbesho" },
+              { icon: <IcTelegram className="w-5 h-5" />, label: "تلگرام", href: "https://t.me/ratbesho" },
+              { icon: <IcYoutube className="w-5 h-5" />, label: "یوتیوب", href: "https://youtube.com/@ratbesho" },
+              { icon: <IcWhatsapp className="w-5 h-5" />, label: "واتس‌اپ", href: "https://wa.me/989120002405" },
             ].map((s) => (
               <a
                 key={s.label}
@@ -80,14 +84,14 @@ export default function Footer() {
           <h3 className="font-display text-xl text-saffron">دسترسی سریع</h3>
           <ul className="mt-5 space-y-3">
             {NAV_LINKS.map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
+              <li key={l.to}>
+                <Link
+                  to={l.to}
                   className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
                 >
                   <span className="w-2 h-2 rounded-full bg-coral group-hover:w-4 transition-all duration-300" />
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -104,10 +108,10 @@ export default function Footer() {
               "آزمون‌های شبیه‌ساز",
             ].map((s) => (
               <li key={s}>
-                <a href="#consulting" className="group inline-flex items-center gap-2 hover:text-saffron transition-colors">
+                <Link to="/consulting" className="group inline-flex items-center gap-2 hover:text-saffron transition-colors">
                   <span className="w-2 h-2 rounded-full bg-teal group-hover:w-4 transition-all duration-300" />
                   {s}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -118,18 +122,18 @@ export default function Footer() {
           <ul className="mt-5 space-y-3.5 text-sm font-semibold text-paper/70">
             <li className="flex items-start gap-3">
               <IcPin className="w-5 h-5 text-coral shrink-0 mt-0.5" />
-              تهران، ونک، خیابان ملاصدرا، مجتمع آموزشی رتبه‌شو، طبقه ۳
+              {site.settings.address}
             </li>
             <li className="flex items-center gap-3">
               <IcPhone className="w-5 h-5 text-coral shrink-0" />
-              <a href="tel:02191002405" dir="ltr" className="hover:text-saffron transition-colors">
-                {fa("021-9100-2405")}
+              <a href={`tel:${site.settings.phone.replace(/[^+\d]/g, "")}`} dir="ltr" className="hover:text-saffron transition-colors">
+                {fa(site.settings.phone)}
               </a>
             </li>
             <li className="flex items-center gap-3">
               <IcMail className="w-5 h-5 text-coral shrink-0" />
-              <a href="mailto:hello@ratbesho.ir" dir="ltr" className="hover:text-saffron transition-colors">
-                hello@ratbesho.ir
+              <a href={`mailto:${site.settings.email}`} dir="ltr" className="hover:text-saffron transition-colors">
+                {site.settings.email}
               </a>
             </li>
           </ul>
@@ -167,8 +171,14 @@ export default function Footer() {
       <div className="border-t border-inkline">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-semibold text-paper/45">
           <p>© {fa(1405)} رتبه‌شو — تمام حقوق محفوظ است.</p>
-          <p>
-            ساخته‌شده با <span className="text-coral">♥</span> برای داوطلبانی که جدی‌اند
+          <p className="flex items-center gap-4">
+            <span>
+              ساخته‌شده با <span className="text-coral">♥</span> برای داوطلبانی که جدی‌اند
+            </span>
+            <Link to="/admin" className="inline-flex items-center gap-1.5 text-paper/60 hover:text-saffron transition-colors">
+              <IcGear className="w-4 h-4" />
+              پنل مدیریت
+            </Link>
           </p>
         </div>
       </div>

@@ -445,9 +445,63 @@ export const STATS = [
 ];
 
 export const NAV_LINKS = [
-  { href: "#classes", label: "کلاس‌ها" },
-  { href: "#consulting", label: "مشاوره و انتخاب رشته" },
-  { href: "#shop", label: "محصولات" },
-  { href: "#teachers", label: "اساتید" },
-  { href: "#faq", label: "سوالات" },
+  { to: "/classes", label: "کلاس‌ها" },
+  { to: "/consulting", label: "مشاوره و انتخاب رشته" },
+  { to: "/shop", label: "محصولات" },
+  { to: "/teachers", label: "اساتید و قبولی‌ها" },
+  { to: "/contact", label: "تماس و سوالات" },
 ];
+
+/* ================= editable site content (admin dashboard) ================= */
+
+export type Stat = { value: number; suffix: string; label: string };
+export type Step = { n: string; title: string; desc: string };
+export type Testimonial = { name: string; rank: string; major: string; quote: string };
+export type Faq = { q: string; a: string };
+
+export type SiteSettings = {
+  heroBadge: string;
+  heroTitle1: string;
+  heroTitle2Pre: string;
+  heroHighlight: string;
+  heroDesc: string;
+  phone: string;
+  email: string;
+  address: string;
+};
+
+export type SiteData = {
+  settings: SiteSettings;
+  ticker: string[];
+  stats: Stat[];
+  classes: ClassItem[];
+  products: Product[];
+  services: Service[];
+  steps: Step[];
+  teachers: Teacher[];
+  testimonials: Testimonial[];
+  faqs: Faq[];
+};
+
+export const DEFAULT_SITE: SiteData = {
+  settings: {
+    heroBadge: "ثبت‌نام ترم جدید فعال است",
+    heroTitle1: "انتخاب رشته،",
+    heroTitle2Pre: "قمار نیست؛",
+    heroHighlight: "نقشهٔ راه است",
+    heroDesc:
+      "کلاس‌های تخصصی، مشاورهٔ خصوصی انتخاب رشته و منابع دست‌اول — همه زیر یک سقف، تا رتبه‌ات را با داده و برنامه بگیری، نه با شانس.",
+    phone: "021-9100-2405",
+    email: "hello@ratbesho.ir",
+    address: "تهران، ونک، خیابان ملاصدرا، مجتمع آموزشی رتبه‌شو، طبقه ۳",
+  },
+  ticker: TICKER,
+  stats: STATS,
+  classes: CLASSES,
+  products: PRODUCTS,
+  services: SERVICES,
+  steps: STEPS,
+  teachers: TEACHERS,
+  testimonials: TESTIMONIALS,
+  faqs: FAQS,
+};

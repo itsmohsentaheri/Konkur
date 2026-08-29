@@ -1,11 +1,16 @@
 import { useMemo, useState } from "react";
-import { PRODUCTS, PRODUCT_FILTERS } from "../data";
+import { PRODUCT_FILTERS } from "../data";
+import { useSite } from "../store";
 import { Reveal, SectionHead, fa, money } from "../ui";
 import { IcBook, IcCart, IcHeadset, IcPlus, IcShield, IcStar, IcTruck, IcUsers } from "../icons";
 
 export default function Products({ onAdd }: { onAdd: (name: string) => void }) {
+  const { site } = useSite();
   const [filter, setFilter] = useState("همه");
-  const list = useMemo(() => (filter === "همه" ? PRODUCTS : PRODUCTS.filter((p) => p.type === filter)), [filter]);
+  const list = useMemo(
+    () => (filter === "همه" ? site.products : site.products.filter((p) => p.type === filter)),
+    [filter, site.products]
+  );
 
   return (
     <section id="shop" className="relative bg-paper py-20 md:py-28 scroll-mt-20 overflow-hidden">

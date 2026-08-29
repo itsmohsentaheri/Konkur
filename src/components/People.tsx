@@ -1,8 +1,9 @@
-import { TEACHERS, TESTIMONIALS } from "../data";
+import { useSite } from "../store";
 import { Reveal, SectionHead, fa } from "../ui";
 import { IcCap, IcStar, IcUsers } from "../icons";
 
 export function Teachers() {
+  const { site } = useSite();
   return (
     <section id="teachers" className="relative bg-paper bg-grid py-20 md:py-28 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -16,7 +17,7 @@ export function Teachers() {
           desc="همه اساتید رتبه‌شو، خودشان رتبه‌های برتر کنکور بوده‌اند؛ یعنی مسیری را که پیشنهاد می‌دهند، قدم‌به‌قدم پیموده‌اند."
         />
         <div className="mt-12 grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {TEACHERS.map((t, i) => (
+          {site.teachers.map((t, i) => (
             <Reveal key={t.name} delay={(i % 4) * 110}>
               <article className="group relative h-full bg-card border-2 border-ink rounded-2xl p-6 hover:-translate-y-2 hover:shadow-hard transition-all duration-400 overflow-hidden">
                 <span
@@ -64,6 +65,7 @@ export function Teachers() {
 }
 
 export function Testimonials() {
+  const { site } = useSite();
   return (
     <section className="relative bg-ink bg-grid-dark py-20 md:py-28 overflow-hidden">
       <div className="pointer-events-none absolute -top-24 left-1/4 w-[400px] h-[400px] rounded-full bg-coral/10 blur-3xl" />
@@ -79,7 +81,7 @@ export function Testimonials() {
           desc="چند پیام از داوطلبانی که پارسال همین موقع، جای تو بودند و الان سر کلاس دانشگاه نشسته‌اند."
         />
         <div className="mt-12 grid md:grid-cols-2 gap-6">
-          {TESTIMONIALS.map((t, i) => (
+          {site.testimonials.map((t, i) => (
             <Reveal key={t.name} delay={(i % 2) * 130}>
               <article className="group relative h-full bg-ink2 border-2 border-inkline rounded-2xl p-7 hover:border-saffron hover:-translate-y-1.5 transition-all duration-400">
                 <span className="absolute top-5 left-6 font-display text-7xl text-saffron/25 leading-none select-none group-hover:text-saffron/50 transition-colors duration-500">

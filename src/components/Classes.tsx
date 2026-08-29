@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { CLASSES, CLASS_FILTERS } from "../data";
+import { CLASS_FILTERS } from "../data";
+import { useSite } from "../store";
 import { Reveal, SectionHead, fa, money } from "../ui";
 import { IcCalendar, IcCap, IcClock, IcFlame, IcStar, IcUsers, IcVideo, IcArrow } from "../icons";
 
@@ -11,8 +12,12 @@ const ACCENTS: Record<string, string> = {
 };
 
 export default function Classes() {
+  const { site } = useSite();
   const [filter, setFilter] = useState<(typeof CLASS_FILTERS)[number]>("همه");
-  const list = useMemo(() => (filter === "همه" ? CLASSES : CLASSES.filter((c) => c.group === filter)), [filter]);
+  const list = useMemo(
+    () => (filter === "همه" ? site.classes : site.classes.filter((c) => c.group === filter)),
+    [filter, site.classes]
+  );
 
   return (
     <section id="classes" className="relative bg-paper py-20 md:py-28 scroll-mt-20">
@@ -41,7 +46,7 @@ export default function Classes() {
                 {f}
                 {f !== "همه" && (
                   <span className={`mr-2 text-xs ${filter === f ? "text-saffron" : "text-muted"}`}>
-                    {fa(CLASSES.filter((c) => c.group === f).length)}
+                    {fa(site.classes.filter((c) => c.group === f).length)}
                   </span>
                 )}
               </button>

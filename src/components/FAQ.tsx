@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { FAQS } from "../data";
+import { useSite } from "../store";
 import { Reveal, SectionHead, fa } from "../ui";
 import { IcChat, IcPhone, IcTelegram, IcWhatsapp } from "../icons";
 
 export default function FAQ() {
+  const { site } = useSite();
   const [open, setOpen] = useState<number>(0);
 
   return (
@@ -28,14 +29,18 @@ export default function FAQ() {
               {fa("021-9100-2405")}
             </a>
             <a
-              href="#top"
+              href="https://wa.me/989120002405"
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-2.5 h-12 px-5 rounded-xl bg-card text-ink font-bold text-sm border-2 border-ink hover:bg-saffron/50 hover:-translate-y-0.5 transition-all duration-300"
             >
               <IcWhatsapp className="w-4.5 h-4.5 text-teal" />
               واتس‌اپ
             </a>
             <a
-              href="#top"
+              href="https://t.me/ratbesho"
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-2.5 h-12 px-5 rounded-xl bg-card text-ink font-bold text-sm border-2 border-ink hover:bg-saffron/50 hover:-translate-y-0.5 transition-all duration-300"
             >
               <IcTelegram className="w-4.5 h-4.5 text-teal" />
@@ -45,7 +50,7 @@ export default function FAQ() {
         </div>
 
         <div className="space-y-4">
-          {FAQS.map((f, i) => {
+          {site.faqs.map((f, i) => {
             const isOpen = open === i;
             return (
               <Reveal key={f.q} delay={(i % 3) * 90}>

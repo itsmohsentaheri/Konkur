@@ -1,13 +1,14 @@
 import { useRef, useState, type FormEvent } from "react";
-import { SERVICES, STEPS } from "../data";
+import { useSite } from "../store";
 import { Reveal, SectionHead, fa, money } from "../ui";
 import { IcCheck, IcChat, IcClock, IcPhone, IcSpark } from "../icons";
 
 type FormState = { name: string; phone: string; group: string; service: string };
 
 export default function Consulting() {
+  const { site } = useSite();
   const formRef = useRef<HTMLDivElement>(null);
-  const [form, setForm] = useState<FormState>({ name: "", phone: "", group: "تجربی", service: SERVICES[0].title });
+  const [form, setForm] = useState<FormState>({ name: "", phone: "", group: "تجربی", service: site.services[0]?.title ?? "" });
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [done, setDone] = useState<string | null>(null);
 
@@ -57,7 +58,7 @@ export default function Consulting() {
           {/* sticky side */}
           <div className="lg:sticky lg:top-28 lg:self-start space-y-8">
             <ol className="space-y-1">
-              {STEPS.map((s, i) => (
+              {site.steps.map((s, i) => (
                 <Reveal key={s.n} delay={i * 120}>
                   <li className="group flex gap-5 p-5 rounded-xl border-2 border-transparent hover:border-inkline hover:bg-ink2 transition-all duration-300">
                     <span className="font-display text-4xl text-saffron leading-none w-12 shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -93,7 +94,7 @@ export default function Consulting() {
 
           {/* services + form */}
           <div className="space-y-5">
-            {SERVICES.map((s, i) => (
+            {site.services.map((s, i) => (
               <Reveal key={s.id} delay={(i % 2) * 100}>
                 <article
                   className={`relative bg-ink2 border-2 rounded-2xl p-6 md:p-7 transition-all duration-300 hover:-translate-y-1 ${
@@ -160,7 +161,7 @@ export default function Consulting() {
                     <button
                       onClick={() => {
                         setDone(null);
-                        setForm({ name: "", phone: "", group: "تجربی", service: SERVICES[0].title });
+                        setForm({ name: "", phone: "", group: "تجربی", service: site.services[0]?.title ?? "" });
                       }}
                       className="mt-6 h-11 px-6 rounded-xl bg-ink text-paper font-bold border-2 border-ink hover:bg-coral transition-colors"
                     >
@@ -223,7 +224,7 @@ export default function Consulting() {
                           onChange={(e) => setForm({ ...form, service: e.target.value })}
                           className="mt-1.5 w-full h-12 px-4 rounded-xl bg-paper border-2 border-ink/30 font-semibold text-ink outline-none focus:border-ink transition-colors"
                         >
-                          {SERVICES.map((s) => (
+                          {site.services.map((s) => (
                             <option key={s.id}>{s.title}</option>
                           ))}
                         </select>

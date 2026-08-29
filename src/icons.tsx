@@ -192,6 +192,12 @@ export const IcWhatsapp = ({ className }: { className?: string }) => (
     <path d="M9 8.8c-.4 1.7 2.6 6 5.8 6.2.9 0 1.7-.5 1.7-1.3 0-.6-1-1.2-1.8-1.5-.5-.2-1 .3-1.3.5-.9-.3-2.2-1.6-2.4-2.5.3-.3.7-.7.5-1.2C11.3 8.3 9.2 8 9 8.8Z" />
   </I>
 );
+export const IcGear = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <circle cx="12" cy="12" r="3.2" />
+    <path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8" />
+  </I>
+);
 export const IcSpark = ({ className }: { className?: string }) => (
   <I className={className}>
     <path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18l-1.8-5.4L4.5 10.8 10.2 9 12 3.5Z" />

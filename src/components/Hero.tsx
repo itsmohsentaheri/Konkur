@@ -1,5 +1,5 @@
-import { STATS, TICKER } from "../data";
 import { CountUp, Reveal, fa, useCountdown } from "../ui";
+import { useSite } from "../store";
 import { IcArrow, IcPlay, IcSpark, IcTarget, IcChart } from "../icons";
 
 const LETTERS = ["الف", "ب", "ج", "د"];
@@ -119,7 +119,8 @@ function Countdown() {
 }
 
 function Ticker() {
-  const items = [...TICKER, ...TICKER];
+  const { site } = useSite();
+  const items = [...site.ticker, ...site.ticker];
   return (
     <div className="marquee relative z-10 bg-saffron border-y-2 border-ink py-3 overflow-hidden -rotate-1 scale-[1.02]">
       <div className="marquee-track">
@@ -137,6 +138,8 @@ function Ticker() {
 }
 
 export default function Hero() {
+  const { site } = useSite();
+  const s = site.settings;
   return (
     <>
       <section id="top" className="relative bg-grid pt-[72px] overflow-hidden">
@@ -151,25 +154,22 @@ export default function Hero() {
               <span style={{ animationDelay: "0.05s" }}>
                 <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border-2 border-ink bg-card shadow-hard-sm text-sm font-bold">
                   <span className="pulse-dot w-2.5 h-2.5 rounded-full bg-coral" />
-                  ثبت‌نام ترم جدید فعال است
+                  {s.heroBadge}
                 </span>
               </span>
             </div>
             <h1 className="font-display text-[2.9rem] leading-[1.18] md:text-7xl md:leading-[1.16] text-ink mt-6">
               <span className="hero-line">
-                <span style={{ animationDelay: "0.15s" }}>انتخاب رشته،</span>
+                <span style={{ animationDelay: "0.15s" }}>{s.heroTitle1}</span>
               </span>
               <span className="hero-line">
                 <span style={{ animationDelay: "0.3s" }}>
-                  قمار نیست؛ <span className="hl on">نقشهٔ راه</span> است
+                  {s.heroTitle2Pre} <span className="hl on">{s.heroHighlight}</span>
                 </span>
               </span>
             </h1>
             <Reveal delay={250} className="mt-6 max-w-xl">
-              <p className="text-lg leading-9 text-muted">
-                کلاس‌های تخصصی، مشاورهٔ خصوصی انتخاب رشته و منابع دست‌اول — همه زیر یک سقف، تا{" "}
-                <strong className="text-ink font-bold">رتبه‌ات را با داده و برنامه بگیری</strong>، نه با شانس.
-              </p>
+              <p className="text-lg leading-9 text-muted">{s.heroDesc}</p>
             </Reveal>
             <Reveal delay={380} className="mt-8 flex flex-wrap items-center gap-4">
               <a
@@ -190,12 +190,12 @@ export default function Hero() {
               </a>
             </Reveal>
             <Reveal delay={480} className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-[2px] border-2 border-ink rounded-xl bg-ink/15 overflow-hidden">
-              {STATS.map((s) => (
-                <div key={s.label} className="bg-card px-4 py-5 text-center hover:bg-saffron/25 transition-colors duration-300">
+              {site.stats.map((st) => (
+                <div key={st.label} className="bg-card px-4 py-5 text-center hover:bg-saffron/25 transition-colors duration-300">
                   <p className="font-display text-3xl md:text-4xl text-ink leading-none">
-                    <CountUp target={s.value} suffix={s.suffix} />
+                    <CountUp target={st.value} suffix={st.suffix} />
                   </p>
-                  <p className="text-xs font-bold text-muted mt-2">{s.label}</p>
+                  <p className="text-xs font-bold text-muted mt-2">{st.label}</p>
                 </div>
               ))}
             </Reveal>
