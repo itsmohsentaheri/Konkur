@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PageHero, Reveal, fa, money } from "../ui";
 import { useSite } from "../store";
 import { useActivity } from "../activity";
+import { Seo } from "../seo";
 import { useAuth } from "../auth";
 import {
   IcArrow,
@@ -340,6 +341,7 @@ export default function AdminDashboard() {
 
   return (
     <>
+      <Seo title="داشبورد مدیریت | رتبه‌شو" description="پنل مدیریت رتبه‌شو" path="/dashboard/admin" noindex />
       <PageHero
         crumb="داشبورد ادمین"
         kicker="پنل مدیریت"

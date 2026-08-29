@@ -27,22 +27,21 @@ export default function Consulting() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     const errs: typeof errors = {};
     if (form.name.trim().length < 3) errs.name = "نام و نام خانوادگی را کامل وارد کنید";
     if (!/^09\d{9}$/.test(form.phone.trim())) errs.phone = "شماره موبایل باید مثل ۰۹۱۲۳۴۵۶۷۸۹ باشد";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    const code = `RS-${Math.floor(1000 + Math.random() * 9000)}`;
-    activity.addReservation({
-      code,
+    /* کد پیگیری سمت api (معادل سرور) تولید می‌شود */
+    const created = await activity.addReservation({
       name: form.name.trim(),
       phone: form.phone.trim(),
       group: form.group,
       service: form.service,
     });
-    setDone(code);
+    setDone(created.code);
   };
 
   return (

@@ -9,12 +9,15 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
   const activity = useActivity();
   const { user } = useAuth();
   const [orderCode, setOrderCode] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const total = activity.cart.reduce((a, b) => a + b.price * b.qty, 0);
 
-  const doCheckout = () => {
-    if (!user || activity.cart.length === 0) return;
-    const code = activity.checkout(user.name);
+  const doCheckout = async () => {
+    if (!user || activity.cart.length === 0 || busy) return;
+    setBusy(true);
+    const code = await activity.checkout(user.name);
+    setBusy(false);
     setOrderCode(code);
   };
 

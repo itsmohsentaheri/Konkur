@@ -3,6 +3,7 @@ import FAQ from "../components/FAQ";
 import { PageHero, Reveal, fa } from "../ui";
 import { useSite } from "../store";
 import { useActivity } from "../activity";
+import { Seo, jsonLd } from "../seo";
 import { IcCheck, IcClock, IcMail, IcPhone, IcPin, IcSpark } from "../icons";
 
 const TOPICS = ["مشاوره انتخاب رشته", "کلاس‌های آموزشی", "محصولات و فروشگاه", "همکاری با رتبه‌شو", "سایر موضوعات"];
@@ -25,7 +26,7 @@ export default function ContactPage() {
     if (form.msg.trim().length < 10) errs.msg = "پیام را کمی کامل‌تر بنویس (حداقل ۱۰ حرف)";
     setErr(errs);
     if (Object.keys(errs).length) return;
-    activity.addMessage({
+    void activity.addMessage({
       name: form.name.trim(),
       phone: form.phone.trim(),
       topic: form.topic,
@@ -43,6 +44,12 @@ export default function ContactPage() {
 
   return (
     <>
+      <Seo
+        title="تماس با رتبه‌شو و سوالات متداول کنکور"
+        description="راه‌های ارتباطی با تیم رتبه‌شو؛ ارسال پیام، رزرو مشاوره تلفنی و پاسخ سوالات متداول داوطلبان کنکور و انتخاب رشته."
+        path="/contact"
+        jsonLd={[jsonLd.breadcrumb([["خانه", "/"], ["تماس با ما", "/contact"]]), jsonLd.faqs(site.faqs)]}
+      />
       <PageHero
         crumb="تماس"
         kicker="تماس با رتبه‌شو"

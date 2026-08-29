@@ -3,6 +3,7 @@ import Hero from "../components/Hero";
 import { Teachers, Testimonials } from "../components/People";
 import { useSite } from "../store";
 import { Reveal, SectionHead, fa, money, useCountdown } from "../ui";
+import { Seo } from "../seo";
 import { IcArrow, IcCap, IcCart, IcChat, IcCheck, IcClock } from "../icons";
 
 const DOT: Record<string, string> = { saffron: "bg-saffron", coral: "bg-coral", teal: "bg-teal", ink: "bg-ink" };
@@ -154,6 +155,11 @@ function Previews() {
 export default function Home() {
   return (
     <>
+      <Seo
+        title="رتبه‌شو | مشاوره تخصصی انتخاب رشته و کلاس‌های کنکور ۱۴۰۵"
+        description="مشاوره کنکور و انتخاب رشته با داده و برنامه، کلاس‌های تخصصی با اساتید رتبه‌برتر و منابع دست‌اول کنکوری — همه زیر یک سقف."
+        path="/"
+      />
       <Hero />
       <Previews />
       <Teachers />
