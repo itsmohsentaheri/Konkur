@@ -1,0 +1,507 @@
+export type ClassItem = {
+  id: number;
+  title: string;
+  teacher: string;
+  group: "تجربی" | "ریاضی" | "انسانی" | "عمومی";
+  sessions: number;
+  hours: number;
+  price: number;
+  oldPrice?: number;
+  capacity: number;
+  rating: number;
+  students: number;
+  schedule: string;
+  mode: string;
+  badge?: string;
+  accent: "saffron" | "coral" | "teal" | "ink";
+};
+
+export const CLASSES: ClassItem[] = [
+  {
+    id: 1,
+    title: "زیست جامع کنکور",
+    teacher: "دکتر آرش کمالی",
+    group: "تجربی",
+    sessions: 48,
+    hours: 96,
+    price: 3850000,
+    oldPrice: 4600000,
+    capacity: 82,
+    rating: 4.9,
+    students: 1240,
+    schedule: "پنجشنبه‌ها ۱۶:۰۰",
+    mode: "آنلاین زنده",
+    badge: "پرطرفدار",
+    accent: "coral",
+  },
+  {
+    id: 2,
+    title: "شیمی صفر تا صد",
+    teacher: "دکتر لیلا احمدی",
+    group: "تجربی",
+    sessions: 44,
+    hours: 88,
+    price: 3600000,
+    capacity: 91,
+    rating: 4.9,
+    students: 980,
+    schedule: "جمعه‌ها ۱۰:۰۰",
+    mode: "آنلاین زنده",
+    badge: "ظرفیت محدود",
+    accent: "saffron",
+  },
+  {
+    id: 3,
+    title: "ریاضیات پایه تا پیشرفته",
+    teacher: "مهندس سارا محمدی",
+    group: "ریاضی",
+    sessions: 56,
+    hours: 112,
+    price: 4200000,
+    oldPrice: 4900000,
+    capacity: 64,
+    rating: 4.8,
+    students: 860,
+    schedule: "دوشنبه‌ها ۱۸:۰۰",
+    mode: "آنلاین + حضوری",
+    badge: "ترم جدید",
+    accent: "teal",
+  },
+  {
+    id: 4,
+    title: "فیزیک مفهومی + تست‌زنی",
+    teacher: "استاد بهرام رستمی",
+    group: "ریاضی",
+    sessions: 40,
+    hours: 80,
+    price: 3400000,
+    capacity: 47,
+    rating: 4.7,
+    students: 720,
+    schedule: "سه‌شنبه‌ها ۱۷:۰۰",
+    mode: "آنلاین زنده",
+    accent: "ink",
+  },
+  {
+    id: 5,
+    title: "ادبیات و آرایه‌های کنکوری",
+    teacher: "استاد حامد نیکو",
+    group: "انسانی",
+    sessions: 32,
+    hours: 48,
+    price: 2200000,
+    capacity: 58,
+    rating: 4.6,
+    students: 540,
+    schedule: "شنبه‌ها ۱۵:۰۰",
+    mode: "آنلاین زنده",
+    accent: "coral",
+  },
+  {
+    id: 6,
+    title: "عربی تخصصی انسانی",
+    teacher: "استاد مریم صادقی",
+    group: "انسانی",
+    sessions: 28,
+    hours: 42,
+    price: 1900000,
+    capacity: 70,
+    rating: 4.8,
+    students: 410,
+    schedule: "چهارشنبه‌ها ۱۶:۳۰",
+    mode: "آنلاین زنده",
+    accent: "saffron",
+  },
+  {
+    id: 7,
+    title: "زبان انگلیسی کنکور",
+    teacher: "استاد کاوه شریفی",
+    group: "عمومی",
+    sessions: 24,
+    hours: 36,
+    price: 1650000,
+    capacity: 39,
+    rating: 4.5,
+    students: 630,
+    schedule: "یکشنبه‌ها ۱۸:۳۰",
+    mode: "آنلاین زنده",
+    accent: "teal",
+  },
+  {
+    id: 8,
+    title: "دوره طلایی جمع‌بندی",
+    teacher: "تیم اساتید رتبه‌شو",
+    group: "عمومی",
+    sessions: 20,
+    hours: 60,
+    price: 2900000,
+    oldPrice: 3800000,
+    capacity: 88,
+    rating: 5.0,
+    students: 1580,
+    schedule: "هر روز ۸:۰۰ تا ۱۳:۰۰",
+    mode: "حضوری فشرده",
+    badge: "ظرفیت محدود",
+    accent: "ink",
+  },
+];
+
+export const CLASS_FILTERS = ["همه", "تجربی", "ریاضی", "انسانی", "عمومی"] as const;
+
+export type Product = {
+  id: number;
+  title: string;
+  type: string;
+  price: number;
+  oldPrice?: number;
+  rating: number;
+  sold: number;
+  meta: string;
+  badge?: string;
+  color: string;
+  initial: string;
+};
+
+export const PRODUCTS: Product[] = [
+  {
+    id: 1,
+    title: "جزوه طلایی زیست (۳ جلد)",
+    type: "جزوه",
+    price: 890000,
+    oldPrice: 1150000,
+    rating: 4.9,
+    sold: 2340,
+    meta: "۶۸۰ صفحه • تست‌های نشان‌دار",
+    badge: "پرفروش",
+    color: "#14a0a0",
+    initial: "ز",
+  },
+  {
+    id: 2,
+    title: "کتاب جامع ریاضی کنکور",
+    type: "کتاب",
+    price: 540000,
+    rating: 4.8,
+    sold: 1875,
+    meta: "۹۲۰ صفحه • پاسخ تشریحی",
+    color: "#161b2e",
+    initial: "ر",
+  },
+  {
+    id: 3,
+    title: "بانک تست شیمی (۴٬۵۰۰ تست)",
+    type: "تست",
+    price: 420000,
+    rating: 4.7,
+    sold: 1420,
+    meta: "۵۴۰ صفحه • سطح‌بندی‌شده",
+    color: "#e5484d",
+    initial: "ش",
+  },
+  {
+    id: 4,
+    title: "فلش‌کارت لغات ۵۰۴ و کنکور",
+    type: "فلش‌کارت",
+    price: 180000,
+    rating: 4.5,
+    sold: 2960,
+    meta: "۶۲۰ کارت • جعبه لایتنر",
+    color: "#e39b0a",
+    initial: "ل",
+  },
+  {
+    id: 5,
+    title: "آزمون‌های شبیه‌ساز (۱۲ مرحله)",
+    type: "آزمون",
+    price: 350000,
+    rating: 4.9,
+    sold: 1105,
+    meta: "دفترچه + پاسخنامه + کارنامه",
+    badge: "جدید",
+    color: "#2b3457",
+    initial: "آ",
+  },
+  {
+    id: 6,
+    title: "پکیج ویدیویی جمع‌بندی ۴۰ روزه",
+    type: "ویدیو",
+    price: 1450000,
+    oldPrice: 1900000,
+    rating: 4.8,
+    sold: 890,
+    meta: "۱۲۰ ساعت • همه دروس",
+    badge: "تخفیف ویژه",
+    color: "#0d7d7d",
+    initial: "و",
+  },
+  {
+    id: 7,
+    title: "دفتر برنامه‌ریزی روزانه",
+    type: "لوازم",
+    price: 120000,
+    rating: 4.6,
+    sold: 3480,
+    meta: "۳۶۵ روز • گزارش هفتگی",
+    color: "#e5484d",
+    initial: "ب",
+  },
+  {
+    id: 8,
+    title: "خلاصه نموداری ادبیات",
+    type: "جزوه",
+    price: 260000,
+    rating: 4.4,
+    sold: 975,
+    meta: "۲۱۰ صفحه • نمودار درختی",
+    color: "#e39b0a",
+    initial: "ا",
+  },
+];
+
+export const PRODUCT_FILTERS = ["همه", "جزوه", "کتاب", "تست", "فلش‌کارت", "آزمون", "ویدیو", "لوازم"];
+
+export type Service = {
+  id: number;
+  title: string;
+  duration: string;
+  price: number;
+  features: string[];
+  badge?: string;
+};
+
+export const SERVICES: Service[] = [
+  {
+    id: 1,
+    title: "مشاوره تخصصی انتخاب رشته",
+    duration: "۹۰ دقیقه",
+    price: 890000,
+    features: ["تحلیل کامل کارنامه و تراز", "چیدمان هوشمند ۱۵۰ انتخاب", "بررسی بومی‌گزینی و سهمیه‌ها", "یک جلسه پیگیری رایگان"],
+    badge: "محبوب‌ترین",
+  },
+  {
+    id: 2,
+    title: "جلسه برنامه‌ریزی هفتگی",
+    duration: "۶۰ دقیقه",
+    price: 450000,
+    features: ["برنامه مطالعاتی شخصی‌سازی‌شده", "تعیین بودجه‌بندی دروس", "گزارش‌گیری و اصلاح مسیر"],
+  },
+  {
+    id: 3,
+    title: "تحلیل کارنامه و تراز",
+    duration: "۴۵ دقیقه",
+    price: 350000,
+    features: ["بررسی نقاط قوت و ضعف", "مقایسه با رتبه‌های مشابه", "پیشنهاد منابع جبرانی"],
+  },
+  {
+    id: 4,
+    title: "مشاوره تلفنی فوری",
+    duration: "۳۰ دقیقه",
+    price: 290000,
+    features: ["پاسخ سریع به سوالات فوری", "بدون نیاز به رزرو قبلی"],
+  },
+  {
+    id: 5,
+    title: "پکیج همراهی کامل",
+    duration: "تا روز انتخاب رشته",
+    price: 2400000,
+    features: ["مشاوره نامحدود تلفنی و آنلاین", "جلسات هفتگی اختصاصی", "چیدمان نهایی انتخاب رشته", "پشتیبانی تا لحظه ثبت"],
+    badge: "پیشنهاد ویژه",
+  },
+];
+
+export const STEPS = [
+  { n: "۰۱", title: "تماس و تعیین وضعیت", desc: "در یک جلسه کوتاه، شرایط، هدف و فاصله‌ات تا رتبه دلخواه را می‌سنجیم." },
+  { n: "۰۲", title: "تحلیل کارنامه و تراز", desc: "کارنامه‌ات را خط به خط تحلیل می‌کنیم؛ از درصدها تا تراز و رتبه کشوری." },
+  { n: "۰۳", title: "طراحی نقشه راه", desc: "برنامه مطالعاتی، منابع و بودجه‌بندی اختصاصی برای هفته‌های پیش رو." },
+  { n: "۰۴", title: "همراهی تا انتخاب رشته", desc: "تا روز ثبت نهایی کنارت هستیم؛ چیدمان انتخاب‌ها با داده، نه با حدس." },
+];
+
+export type Teacher = {
+  name: string;
+  field: string;
+  credit: string;
+  years: number;
+  students: number;
+  quote: string;
+  color: string;
+  initial: string;
+};
+
+export const TEACHERS: Teacher[] = [
+  {
+    name: "دکتر آرش کمالی",
+    field: "زیست‌شناسی",
+    credit: "رتبه ۲۳ منطقه • دکترای حرفه‌ای",
+    years: 12,
+    students: 4800,
+    quote: "زیست را نباید حفظ کرد؛ باید دید. وقتی ببینی، فراموش نمی‌شود.",
+    color: "#e5484d",
+    initial: "ک",
+  },
+  {
+    name: "مهندس سارا محمدی",
+    field: "ریاضیات",
+    credit: "رتبه ۴۵ منطقه • مؤلف ۲ کتاب",
+    years: 9,
+    students: 3900,
+    quote: "ریاضی یعنی الگو؛ الگو را پیدا کنی، تست‌ها خودشان حل می‌شوند.",
+    color: "#14a0a0",
+    initial: "م",
+  },
+  {
+    name: "استاد بهرام رستمی",
+    field: "فیزیک",
+    credit: "۱۵ سال تدریس • طراح سوال آزمون‌های کشوری",
+    years: 15,
+    students: 5200,
+    quote: "فیزیک مفهومی است؛ فرمول‌ها فقط میان‌برند، فهم اصلی ماجراست.",
+    color: "#e39b0a",
+    initial: "ر",
+  },
+  {
+    name: "دکتر لیلا احمدی",
+    field: "شیمی",
+    credit: "دکترای شیمی • مدرس برند آموزشی",
+    years: 10,
+    students: 4100,
+    quote: "شیمیِ کنکور یعنی سرعت و دقت؛ هر دو با تمرینِ درست ساخته می‌شود.",
+    color: "#2b3457",
+    initial: "ا",
+  },
+];
+
+export const TESTIMONIALS = [
+  {
+    name: "نگار موسوی",
+    rank: "رتبه ۱۴۲ منطقه ۱",
+    major: "پزشکی • دانشگاه تهران",
+    quote: "بعد از اعلام نتایج کاملاً گیج بودم. تیم رتبه‌شو با تحلیل کارنامه‌ام، انتخاب‌هایی را پیشنهاد داد که خودم حتی به ذهنم هم نمی‌رسید. الان دانشجوی پزشکی تهرانم!",
+  },
+  {
+    name: "امیرحسین کاظمی",
+    rank: "رتبه ۸۷ منطقه ۲",
+    major: "مهندسی کامپیوتر • صنعتی شریف",
+    quote: "کلاس جمع‌بندی طلایی نقطه عطف کنکورم بود. برنامه هفتگی مشاورم باعث شد سه ماه آخر هیچ روزی را از دست ندهم.",
+  },
+  {
+    name: "فاطمه رحیمی",
+    rank: "رتبه ۲۱۵ منطقه ۱",
+    major: "دندان‌پزشکی • شهید بهشتی",
+    quote: "جزوه طلایی زیست و جلسات تحلیل آزمون، درصدم را از ۵۲ به ۷۴ رساند. پشتیبانی‌شان واقعا تا آخرین روز همراه بود.",
+  },
+  {
+    name: "رها کریمی",
+    rank: "رتبه ۵۶ منطقه ۳",
+    major: "حقوق • دانشگاه تهران",
+    quote: "مشاوره انتخاب رشته‌شان دقیقاً مثل یک نقشه گنج بود؛ با داده و آمار، نه شعار. به تک‌تک ۱۵۰ انتخابم مطمئن بودم.",
+  },
+];
+
+export const TICKER = [
+  "رتبه ۱۴۲ — پزشکی تهران",
+  "رتبه ۸۷ — کامپیوتر شریف",
+  "رتبه ۲۱۵ — دندان‌پزشکی شهید بهشتی",
+  "رتبه ۵۶ — حقوق تهران",
+  "رتبه ۳۴ — برق صنعتی اصفهان",
+  "رتبه ۱۷۸ — داروسازی تهران",
+  "رتبه ۹۵ — معماری تهران",
+  "رتبه ۶۱ — حسابداری علامه",
+  "رتبه ۱۲۳ — پرستاری شهید بهشتی",
+  "رتبه ۴۸ — صنایع امیرکبیر",
+];
+
+export const FAQS = [
+  {
+    q: "مشاوره انتخاب رشته به‌صورت آنلاین برگزار می‌شود یا حضوری؟",
+    a: "هر دو حالت امکان‌پذیر است. جلسات آنلاین از طریق تماس تصویری برگزار و فایل صوتی جلسه هم برایتان ارسال می‌شود؛ جلسات حضوری نیز در دفتر تهران (ونک) انجام می‌شود.",
+  },
+  {
+    q: "آیا کلاس‌ها ضبط می‌شوند و اگر جلسه‌ای را از دست بدهم چه می‌شود؟",
+    a: "بله، فیلم همه جلسات تا پایان شهریور همان سال در پنل شما قابل مشاهده است. همچنین جزوه هر جلسه قبل از کلاس بارگذاری می‌شود تا با آمادگی وارد شوید.",
+  },
+  {
+    q: "جزوه‌ها و منابع با تغییرات کنکور ۱۴۰۵ به‌روز شده‌اند؟",
+    a: "همه منابع بر اساس آخرین بودجه‌بندی و تغییرات سازمان سنجش ویرایش شده‌اند و نسخه چاپی هر جزوه، همراه با آپدیت‌های دیجیتال رایگان ارائه می‌شود.",
+  },
+  {
+    q: "امکان پرداخت اقساطی کلاس‌ها وجود دارد؟",
+    a: "بله، برای کلاس‌های بالای ۲ میلیون تومان امکان پرداخت در ۳ قسط بدون کارمزد وجود دارد. در صفحه ثبت‌نام گزینه «پرداخت اقساطی» را انتخاب کنید.",
+  },
+  {
+    q: "پشتیبانی مشاوره تا چه زمانی ادامه دارد؟",
+    a: "در پکیج همراهی کامل، پشتیبانی تا لحظه ثبت نهایی انتخاب رشته در سایت سنجش ادامه دارد؛ در سایر خدمات نیز تا ۳۰ روز بعد از جلسه، پاسخگویی رایگان دارید.",
+  },
+  {
+    q: "چطور از تخفیف‌های فصلی استفاده کنم؟",
+    a: "کدهای تخفیف در کانال تلگرام و پیج اینستاگرام رتبه‌شو اعلام می‌شود. هنگام ثبت‌نام، کد را در فیلد «کد تخفیف» وارد کنید تا مبلغ نهایی به‌صورت خودکار اعمال شود.",
+  },
+];
+
+export const STATS = [
+  { value: 12, suffix: "+", label: "سال تجربه" },
+  { value: 8500, suffix: "+", label: "دانش‌آموز" },
+  { value: 320, suffix: "", label: "رتبه سه‌رقمی" },
+  { value: 94, suffix: "٪", label: "رضایت داوطلبان" },
+];
+
+export const NAV_LINKS = [
+  { to: "/classes", label: "کلاس‌ها" },
+  { to: "/consulting", label: "مشاوره و انتخاب رشته" },
+  { to: "/shop", label: "محصولات" },
+  { to: "/teachers", label: "اساتید و قبولی‌ها" },
+  { to: "/contact", label: "تماس و سوالات" },
+];
+
+/* ================= editable site content (admin dashboard) ================= */
+
+export type Stat = { value: number; suffix: string; label: string };
+export type Step = { n: string; title: string; desc: string };
+export type Testimonial = { name: string; rank: string; major: string; quote: string };
+export type Faq = { q: string; a: string };
+
+export type SiteSettings = {
+  heroBadge: string;
+  heroTitle1: string;
+  heroTitle2Pre: string;
+  heroHighlight: string;
+  heroDesc: string;
+  phone: string;
+  email: string;
+  address: string;
+};
+
+export type SiteData = {
+  settings: SiteSettings;
+  ticker: string[];
+  stats: Stat[];
+  classes: ClassItem[];
+  products: Product[];
+  services: Service[];
+  steps: Step[];
+  teachers: Teacher[];
+  testimonials: Testimonial[];
+  faqs: Faq[];
+};
+
+export const DEFAULT_SITE: SiteData = {
+  settings: {
+    heroBadge: "ثبت‌نام ترم جدید فعال است",
+    heroTitle1: "انتخاب رشته،",
+    heroTitle2Pre: "قمار نیست؛",
+    heroHighlight: "نقشهٔ راه است",
+    heroDesc:
+      "کلاس‌های تخصصی، مشاورهٔ خصوصی انتخاب رشته و منابع دست‌اول — همه زیر یک سقف، تا رتبه‌ات را با داده و برنامه بگیری، نه با شانس.",
+    phone: "021-9100-2405",
+    email: "hello@ratbesho.ir",
+    address: "تهران، ونک، خیابان ملاصدرا، مجتمع آموزشی رتبه‌شو، طبقه ۳",
+  },
+  ticker: TICKER,
+  stats: STATS,
+  classes: CLASSES,
+  products: PRODUCTS,
+  services: SERVICES,
+  steps: STEPS,
+  teachers: TEACHERS,
+  testimonials: TESTIMONIALS,
+  faqs: FAQS,
+};
