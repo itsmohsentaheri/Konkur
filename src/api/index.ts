@@ -17,6 +17,7 @@
  *  جدول کامل اندپوینت‌های REST معادل، در فایل BACKEND.md آمده است.
  */
 import { db, delay, faDate, uid, SEED_ACTIVITY } from "./db";
+import { http, REMOTE } from "./client";
 import type { SiteData } from "../data";
 import type {
   ActivityState,
@@ -31,6 +32,9 @@ import type {
 } from "./types";
 
 export const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "/api/v1";
+
+/** آیا فرانت به بک‌اند Node.js واقعی وصل است یا در حالت دمو؟ */
+export { REMOTE };
 
 const SIMULATED_LATENCY = 140; // ms — حس شبکهٔ واقعی در دمو
 
@@ -62,6 +66,12 @@ export const api = {
       return found ? strip(found) : null;
     },
     async signup(input: SignupInput): Promise<User> {
+      if (REMOTE) {
+        const res = await http.post<{ token: string; user: User }>("/auth/signup", input);
+        http.setToken(res.token);
+        db.saveSession(res.user.email);
+        return res.user;
+      }
       return request("POST /auth/signup", () => {
         const email = input.email.trim().toLowerCase();
         const users = db.loadUsers();
@@ -82,6 +92,12 @@ export const api = {
       });
     },
     async login(input: LoginInput): Promise<User> {
+      if (REMOTE) {
+        const res = await http.post<{ token: string; user: User }>("/auth/login", input);
+        http.setToken(res.token);
+        db.saveSession(res.user.email);
+        return res.user;
+      }
       return request("POST /auth/login", () => {
         const id = input.identifier.trim().toLowerCase();
         const found = db.loadUsers().find(
@@ -94,6 +110,16 @@ export const api = {
       });
     },
     async logout(): Promise<void> {
+      if (REMOTE) {
+        try {
+          await http.post("/auth/logout");
+        } catch {
+          /* even if server unreachable, clear local session */
+        }
+        http.clearToken();
+        db.clearSession();
+        return;
+      }
       return request("POST /auth/logout", () => db.clearSession());
     },
     async registerUser(user: StoredUser): Promise<void> {
@@ -106,13 +132,26 @@ export const api = {
   content: {
     get: (): SiteData => db.loadSite(),
     async save(site: SiteData): Promise<void> {
-      return request("PUT /content", () => db.saveSite(site));
+      // همیشه نسخهٔ محلی را نگه می‌داریم (برای رندر فوری و حالت دمو)
+      db.saveSite(site);
+      if (REMOTE) {
+        try {
+          await http.put("/content", { site });
+        } catch {
+          /* اگر سرور در دسترس نبود، تغییر بعدی دوباره تلاش می‌کند */
+        }
+      }
     },
     async reset(): Promise<SiteData> {
-      return request("POST /content/reset", () => {
-        db.resetSite();
-        return db.loadSite();
-      });
+      if (REMOTE) {
+        try {
+          await http.post("/content/reset");
+        } catch {
+          /* noop */
+        }
+      }
+      db.resetSite();
+      return db.loadSite();
     },
   },
 
@@ -121,7 +160,33 @@ export const api = {
   activity: {
     get: (): ActivityState => db.loadActivity(),
     async save(state: ActivityState): Promise<void> {
-      return request("PUT /activity", () => db.saveActivity(state));
+      db.saveActivity(state);
+      if (REMOTE) {
+        try {
+          await http.put("/activity", {
+            profile: state.profile,
+            cart: state.cart,
+            study: state.study,
+            enrolledClassIds: state.enrolledClassIds,
+          });
+        } catch {
+          /* noop */
+        }
+      }
+    },
+    /** فقط در حالت REMOTE: دریافت وضعیت از سرور و ترکیب با state محلی */
+    async fetch(): Promise<Partial<ActivityState> | null> {
+      if (!REMOTE) return null;
+      try {
+        const [activity, reservations, orders] = await Promise.all([
+          http.get<Partial<ActivityState>>("/activity"),
+          http.get<Reservation[]>("/reservations"),
+          http.get<Order[]>("/orders"),
+        ]);
+        return { ...activity, reservations, orders };
+      } catch {
+        return null;
+      }
     },
   },
 
@@ -129,6 +194,10 @@ export const api = {
      POST /orders · GET /orders · PATCH /orders/:id/status */
   orders: {
     async checkout(cart: OrderItem[], customer: string): Promise<Order> {
+      if (REMOTE) {
+        const order = await http.post<Order>("/orders", { customer, items: cart });
+        return order;
+      }
       return request("POST /orders", () => ({
         id: uid(),
         customer,
@@ -139,12 +208,24 @@ export const api = {
       }));
     },
     nextStatus: (cur: string) => cycle(ORDER_FLOW, cur),
+    async updateStatus(id: string, status: string): Promise<void> {
+      if (REMOTE) {
+        try {
+          await http.patch(`/orders/${id}`, { status });
+        } catch {
+          /* noop */
+        }
+      }
+    },
   },
 
   /* ── رزرو مشاوره ────────────────────────────
      POST /reservations · GET /reservations · PATCH /reservations/:id/status */
   reservations: {
     async create(input: Omit<Reservation, "id" | "date" | "status" | "code">): Promise<Reservation> {
+      if (REMOTE) {
+        return await http.post<Reservation>("/reservations", input);
+      }
       return request("POST /reservations", () => ({
         ...input,
         id: uid(),
@@ -154,13 +235,43 @@ export const api = {
       }));
     },
     nextStatus: (cur: string) => cycle(RES_FLOW, cur),
+    async updateStatus(id: string, status: string): Promise<void> {
+      if (REMOTE) {
+        try {
+          await http.patch(`/reservations/${id}`, { status });
+        } catch {
+          /* noop */
+        }
+      }
+    },
   },
 
   /* ── پیام‌های پشتیبانی ──────────────────────
      POST /messages · GET /messages · PATCH /messages/:id/read · DELETE /messages/:id */
   messages: {
     async send(input: Omit<Message, "id" | "date" | "read">): Promise<Message> {
+      if (REMOTE) {
+        return await http.post<Message>("/messages", input);
+      }
       return request("POST /messages", () => ({ ...input, id: uid(), date: faDate(), read: false }));
+    },
+    async markRead(id: string): Promise<void> {
+      if (REMOTE) {
+        try {
+          await http.patch(`/messages/${id}`);
+        } catch {
+          /* noop */
+        }
+      }
+    },
+    async remove(id: string): Promise<void> {
+      if (REMOTE) {
+        try {
+          await http.del(`/messages/${id}`);
+        } catch {
+          /* noop */
+        }
+      }
     },
   },
 
@@ -168,6 +279,14 @@ export const api = {
      POST /newsletter */
   newsletter: {
     async subscribe(contact: string): Promise<void> {
+      if (REMOTE) {
+        try {
+          await http.post("/newsletter", { contact });
+        } catch {
+          /* noop */
+        }
+        return;
+      }
       return request("POST /newsletter", () => void contact);
     },
   },

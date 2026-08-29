@@ -39,6 +39,19 @@ export const todayWeekIndex = () => (new Date().getDay() + 1) % 7;
 export function ActivityProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<Activity>(() => api.activity.get());
 
+  /* در حالت REMOTE، داده‌های اولیه (رزرو/سفارش) را از سرور بگیر و با state محلی ترکیب کن */
+  useEffect(() => {
+    let alive = true;
+    void api.activity.fetch().then((remote) => {
+      if (alive && remote) {
+        setState((s) => ({ ...s, ...remote }));
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   /* ماندگاری: هر تغییر state از طریق api ذخیره می‌شود */
   useEffect(() => {
     void api.activity.save(state);
@@ -51,13 +64,17 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, reservations: [created, ...s.reservations] }));
       return created;
     },
-    cycleReservationStatus: (id) =>
+    cycleReservationStatus: (id) => {
+      const target = state.reservations.find((r) => r.id === id);
+      const next = target ? api.reservations.nextStatus(target.status) : null;
       setState((s) => ({
         ...s,
         reservations: s.reservations.map((r) =>
           r.id === id ? { ...r, status: api.reservations.nextStatus(r.status) } : r
         ),
-      })),
+      }));
+      if (next) void api.reservations.updateStatus(id, next);
+    },
     addToCart: (item) =>
       setState((s) => {
         const existing = s.cart.find((c) => c.title === item.title);
@@ -77,18 +94,27 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, cart: [], orders: [order, ...s.orders] }));
       return `ORD-${order.id.slice(-4).toUpperCase()}`;
     },
-    cycleOrderStatus: (id) =>
+    cycleOrderStatus: (id) => {
+      const target = state.orders.find((o) => o.id === id);
+      const next = target ? api.orders.nextStatus(target.status) : null;
       setState((s) => ({
         ...s,
         orders: s.orders.map((o) => (o.id === id ? { ...o, status: api.orders.nextStatus(o.status) } : o)),
-      })),
+      }));
+      if (next) void api.orders.updateStatus(id, next);
+    },
     addMessage: async (m) => {
       const created = await api.messages.send(m);
       setState((s) => ({ ...s, messages: [created, ...s.messages] }));
     },
-    markRead: (id) =>
-      setState((s) => ({ ...s, messages: s.messages.map((m) => (m.id === id ? { ...m, read: true } : m)) })),
-    deleteMessage: (id) => setState((s) => ({ ...s, messages: s.messages.filter((m) => m.id !== id) })),
+    markRead: (id) => {
+      setState((s) => ({ ...s, messages: s.messages.map((m) => (m.id === id ? { ...m, read: true } : m)) }));
+      void api.messages.markRead(id);
+    },
+    deleteMessage: (id) => {
+      setState((s) => ({ ...s, messages: s.messages.filter((m) => m.id !== id) }));
+      void api.messages.remove(id);
+    },
     logStudy: (minutes) =>
       setState((s) => {
         const idx = todayWeekIndex();
