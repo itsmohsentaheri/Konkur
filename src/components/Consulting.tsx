@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useSite } from "../store";
+import { useActivity } from "../activity";
 import { Reveal, SectionHead, fa, money } from "../ui";
 import { IcCheck, IcChat, IcClock, IcPhone, IcSpark } from "../icons";
 
@@ -7,6 +8,7 @@ type FormState = { name: string; phone: string; group: string; service: string }
 
 export default function Consulting() {
   const { site } = useSite();
+  const activity = useActivity();
   const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<FormState>({ name: "", phone: "", group: "تجربی", service: site.services[0]?.title ?? "" });
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
@@ -25,7 +27,15 @@ export default function Consulting() {
     if (!/^09\d{9}$/.test(form.phone.trim())) errs.phone = "شماره موبایل باید مثل ۰۹۱۲۳۴۵۶۷۸۹ باشد";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    setDone(`RS-${Math.floor(1000 + Math.random() * 9000)}`);
+    const code = `RS-${Math.floor(1000 + Math.random() * 9000)}`;
+    activity.addReservation({
+      code,
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      group: form.group,
+      service: form.service,
+    });
+    setDone(code);
   };
 
   return (

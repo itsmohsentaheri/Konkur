@@ -4,7 +4,7 @@ import { useSite } from "../store";
 import { Reveal, SectionHead, fa, money } from "../ui";
 import { IcBook, IcCart, IcHeadset, IcPlus, IcShield, IcStar, IcTruck, IcUsers } from "../icons";
 
-export default function Products({ onAdd }: { onAdd: (name: string) => void }) {
+export default function Products({ onAdd }: { onAdd: (item: { title: string; price: number }) => void }) {
   const { site } = useSite();
   const [filter, setFilter] = useState("همه");
   const list = useMemo(
@@ -95,7 +95,7 @@ export default function Products({ onAdd }: { onAdd: (name: string) => void }) {
                       </p>
                     </div>
                     <button
-                      onClick={() => onAdd(p.title)}
+                      onClick={() => onAdd({ title: p.title, price: p.price })}
                       aria-label={`افزودن ${p.title} به سبد`}
                       className="grid place-items-center w-11 h-11 rounded-xl bg-ink text-paper border-2 border-ink hover:bg-coral hover:scale-110 active:scale-95 transition-all duration-300"
                     >

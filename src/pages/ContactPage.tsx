@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import FAQ from "../components/FAQ";
 import { PageHero, Reveal, fa } from "../ui";
 import { useSite } from "../store";
+import { useActivity } from "../activity";
 import { IcCheck, IcClock, IcMail, IcPhone, IcPin, IcSpark } from "../icons";
 
 const TOPICS = ["مشاوره انتخاب رشته", "کلاس‌های آموزشی", "محصولات و فروشگاه", "همکاری با رتبه‌شو", "سایر موضوعات"];
@@ -11,6 +12,7 @@ const inputCls =
 
 export default function ContactPage() {
   const { site } = useSite();
+  const activity = useActivity();
   const [form, setForm] = useState({ name: "", phone: "", topic: TOPICS[0], msg: "" });
   const [err, setErr] = useState<{ name?: string; phone?: string; msg?: string }>({});
   const [code, setCode] = useState<string | null>(null);
@@ -23,6 +25,12 @@ export default function ContactPage() {
     if (form.msg.trim().length < 10) errs.msg = "پیام را کمی کامل‌تر بنویس (حداقل ۱۰ حرف)";
     setErr(errs);
     if (Object.keys(errs).length) return;
+    activity.addMessage({
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      topic: form.topic,
+      msg: form.msg.trim(),
+    });
     setCode(`CT-${Math.floor(1000 + Math.random() * 9000)}`);
   };
 

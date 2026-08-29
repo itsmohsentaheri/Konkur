@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { NAV_LINKS } from "../data";
 import { fa } from "../ui";
-import { IcCart, IcMenu, IcX, IcPencil } from "../icons";
+import { IcCart, IcGear, IcGrid, IcMenu, IcUser, IcX, IcPencil } from "../icons";
 
 export function Logo({ dark = false }: { dark?: boolean }) {
   return (
@@ -20,6 +20,7 @@ export function Logo({ dark = false }: { dark?: boolean }) {
 
 export default function Nav({ cartCount }: { cartCount: number }) {
   const [open, setOpen] = useState(false);
+  const [dash, setDash] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -55,11 +56,48 @@ export default function Nav({ cartCount }: { cartCount: number }) {
               </NavLink>
             </li>
           ))}
+          <li className="relative" onMouseEnter={() => setDash(true)} onMouseLeave={() => setDash(false)}>
+            <button
+              onClick={() => setDash((v) => !v)}
+              aria-expanded={dash}
+              className={`flex items-center gap-1.5 text-[15px] transition-colors ${dash ? "font-bold text-ink" : "font-semibold text-ink/75 hover:text-ink"}`}
+            >
+              <IcGrid className="w-4.5 h-4.5" />
+              داشبوردها
+              <svg viewBox="0 0 24 24" className={`w-3.5 h-3.5 transition-transform duration-300 ${dash ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <div
+              className={`absolute top-full right-0 pt-3 transition-all duration-300 ${dash ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"}`}
+            >
+              <div className="w-56 bg-card border-2 border-ink rounded-xl shadow-hard-sm overflow-hidden divide-y-2 divide-ink/10">
+                <Link to="/dashboard/student" onClick={() => setDash(false)} className="flex items-center gap-3 px-4 py-3.5 hover:bg-saffron/40 transition-colors">
+                  <span className="grid place-items-center w-9 h-9 rounded-lg bg-saffron border-2 border-ink">
+                    <IcUser className="w-4.5 h-4.5" />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-bold text-ink leading-tight">داشبورد دانش‌آموز</span>
+                    <span className="block text-[10px] font-semibold text-muted mt-0.5">کلاس‌ها، سفارش‌ها و رزروها</span>
+                  </span>
+                </Link>
+                <Link to="/dashboard/admin" onClick={() => setDash(false)} className="flex items-center gap-3 px-4 py-3.5 hover:bg-saffron/40 transition-colors">
+                  <span className="grid place-items-center w-9 h-9 rounded-lg bg-ink text-saffron border-2 border-ink">
+                    <IcGear className="w-4.5 h-4.5" />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-bold text-ink leading-tight">داشبورد ادمین</span>
+                    <span className="block text-[10px] font-semibold text-muted mt-0.5">آمار، صندوق و وضعیت‌ها</span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </li>
         </ul>
         <div className="flex items-center gap-3">
           <Link
-            to="/shop"
-            aria-label="سبد خرید"
+            to="/dashboard/student"
+            aria-label="سبد خرید و داشبورد دانش‌آموز"
             className="relative grid place-items-center w-11 h-11 rounded-xl border-2 border-ink bg-card hover:bg-saffron hover:-translate-y-0.5 transition-all duration-300"
           >
             <IcCart className="w-5.5 h-5.5" />
@@ -112,11 +150,29 @@ export default function Nav({ cartCount }: { cartCount: number }) {
               </NavLink>
             </li>
           ))}
+          <li className="grid grid-cols-2 gap-2 pt-2">
+            <Link
+              to="/dashboard/student"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-ink bg-saffron text-ink font-bold text-sm"
+            >
+              <IcUser className="w-4.5 h-4.5" />
+              داشبورد دانش‌آموز
+            </Link>
+            <Link
+              to="/dashboard/admin"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ink text-paper font-bold text-sm border-2 border-ink"
+            >
+              <IcGear className="w-4.5 h-4.5 text-saffron" />
+              داشبورد ادمین
+            </Link>
+          </li>
           <li>
             <Link
               to="/consulting"
               onClick={() => setOpen(false)}
-              className="block mt-2 text-center px-4 py-3 rounded-xl bg-ink text-paper font-bold"
+              className="block mt-2 text-center px-4 py-3 rounded-xl border-2 border-ink bg-card text-ink font-bold"
             >
               رزرو مشاوره
             </Link>

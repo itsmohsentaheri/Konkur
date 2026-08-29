@@ -192,6 +192,32 @@ export const IcWhatsapp = ({ className }: { className?: string }) => (
     <path d="M9 8.8c-.4 1.7 2.6 6 5.8 6.2.9 0 1.7-.5 1.7-1.3 0-.6-1-1.2-1.8-1.5-.5-.2-1 .3-1.3.5-.9-.3-2.2-1.6-2.4-2.5.3-.3.7-.7.5-1.2C11.3 8.3 9.2 8 9 8.8Z" />
   </I>
 );
+export const IcUser = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <circle cx="12" cy="8" r="3.6" />
+    <path d="M4.8 20c.8-3.8 3.6-5.8 7.2-5.8s6.4 2 7.2 5.8" />
+  </I>
+);
+export const IcGrid = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <rect x="4" y="4" width="7" height="7" rx="1.5" />
+    <rect x="13" y="4" width="7" height="7" rx="1.5" />
+    <rect x="4" y="13" width="7" height="7" rx="1.5" />
+    <rect x="13" y="13" width="7" height="7" rx="1.5" />
+  </I>
+);
+export const IcTrash = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <path d="M4.5 6.5h15M9.5 6V4.5h5V6M6.5 6.5l.8 13a1.6 1.6 0 0 0 1.6 1.5h6.2a1.6 1.6 0 0 0 1.6-1.5l.8-13" />
+    <path d="M10 10.5v6M14 10.5v6" />
+  </I>
+);
+export const IcTrend = ({ className }: { className?: string }) => (
+  <I className={className}>
+    <path d="m3.5 17 5.5-6 3.5 3 7-8" />
+    <path d="M15 6h4.5v4.5" />
+  </I>
+);
 export const IcGear = ({ className }: { className?: string }) => (
   <I className={className}>
     <circle cx="12" cy="12" r="3.2" />

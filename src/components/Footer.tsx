@@ -94,6 +94,24 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                to="/dashboard/student"
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
+              >
+                <span className="w-2 h-2 rounded-full bg-saffron group-hover:w-4 transition-all duration-300" />
+                داشبورد دانش‌آموز
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/dashboard/admin"
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
+              >
+                <span className="w-2 h-2 rounded-full bg-saffron group-hover:w-4 transition-all duration-300" />
+                داشبورد ادمین
+              </Link>
+            </li>
           </ul>
         </nav>
 

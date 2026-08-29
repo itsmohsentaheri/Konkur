@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { CLASS_FILTERS } from "../data";
 import { useSite } from "../store";
+import { useActivity } from "../activity";
 import { Reveal, SectionHead, fa, money } from "../ui";
-import { IcCalendar, IcCap, IcClock, IcFlame, IcStar, IcUsers, IcVideo, IcArrow } from "../icons";
+import { IcCalendar, IcCap, IcCheck, IcClock, IcFlame, IcStar, IcUsers, IcVideo } from "../icons";
 
 const ACCENTS: Record<string, string> = {
   saffron: "bg-saffron",
@@ -13,6 +15,7 @@ const ACCENTS: Record<string, string> = {
 
 export default function Classes() {
   const { site } = useSite();
+  const activity = useActivity();
   const [filter, setFilter] = useState<(typeof CLASS_FILTERS)[number]>("همه");
   const list = useMemo(
     () => (filter === "همه" ? site.classes : site.classes.filter((c) => c.group === filter)),
@@ -129,13 +132,19 @@ export default function Classes() {
                         {money(c.price)} <span className="text-xs font-body font-bold text-muted">تومان</span>
                       </p>
                     </div>
-                    <a
-                      href="#consulting"
-                      className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-ink text-paper text-sm font-bold border-2 border-ink group-hover:bg-coral hover:-translate-y-0.5 transition-all duration-300"
-                    >
-                      ثبت‌نام
-                      <IcArrow className="w-4 h-4" />
-                    </a>
+                    {activity.enrolledClassIds.includes(c.id) ? (
+                      <span className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-teal text-paper text-sm font-bold border-2 border-ink">
+                        <IcCheck className="w-4 h-4" />
+                        ثبت‌نام شدی
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => activity.enroll(c.id)}
+                        className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-ink text-paper text-sm font-bold border-2 border-ink hover:bg-coral hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                      >
+                        ثبت‌نام در کلاس
+                      </button>
+                    )}
                   </div>
                 </div>
               </article>
@@ -146,9 +155,9 @@ export default function Classes() {
         <Reveal className="mt-12 text-center">
           <p className="text-muted font-semibold">
             دنبال درس خاصی می‌گردی؟{" "}
-            <a href="#consulting" className="text-coral font-bold underline decoration-2 underline-offset-4 hover:text-ink transition-colors">
+            <Link to="/consulting" className="text-coral font-bold underline decoration-2 underline-offset-4 hover:text-ink transition-colors">
               با مشاورهامون صحبت کن
-            </a>{" "}
+            </Link>{" "}
             تا بهترین ترکیب کلاس را برایت بچینند.
           </p>
         </Reveal>

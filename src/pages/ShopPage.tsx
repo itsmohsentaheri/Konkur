@@ -3,7 +3,7 @@ import CrossLinks from "../components/CrossLinks";
 import { PageHero, fa } from "../ui";
 import { useSite } from "../store";
 
-export default function ShopPage({ onAdd }: { onAdd: (name: string) => void }) {
+export default function ShopPage({ onAdd }: { onAdd: (item: { title: string; price: number }) => void }) {
   const { site } = useSite();
   return (
     <>
