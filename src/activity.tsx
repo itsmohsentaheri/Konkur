@@ -11,7 +11,7 @@ export type Reservation = {
   date: string;
   status: string;
 };
-export type OrderItem = { title: string; price: number };
+export type OrderItem = { title: string; price: number; qty: number };
 export type Order = {
   id: string;
   customer: string;
@@ -86,8 +86,8 @@ const SEED: Activity = {
       id: "seed-o1",
       customer: "نگار موسوی",
       items: [
-        { title: "جزوه طلایی زیست (۳ جلد)", price: 890000 },
-        { title: "فلش‌کارت لغات ۵۰۴ و کنکور", price: 180000 },
+        { title: "جزوه طلایی زیست (۳ جلد)", price: 890000, qty: 1 },
+        { title: "فلش‌کارت لغات ۵۰۴ و کنکور", price: 180000, qty: 1 },
       ],
       total: 1070000,
       date: "۱۴۰۴/۱۰/۲۵",
@@ -96,13 +96,13 @@ const SEED: Activity = {
     {
       id: "seed-o2",
       customer: "امیر تهرانی",
-      items: [{ title: "پکیج ویدیویی جمع‌بندی ۴۰ روزه", price: 1450000 }],
+      items: [{ title: "پکیج ویدیویی جمع‌بندی ۴۰ روزه", price: 1450000, qty: 1 }],
       total: 1450000,
       date: "۱۴۰۴/۱۱/۰۱",
       status: "در حال پردازش",
     },
   ],
-  cart: [{ title: "بانک تست شیمی (۴٬۵۰۰ تست)", price: 420000 }],
+  cart: [{ title: "بانک تست شیمی (۴٬۵۰۰ تست)", price: 420000, qty: 1 }],
   messages: [
     {
       id: "seed-m1",
@@ -140,9 +140,10 @@ const SEED: Activity = {
 type Actions = {
   addReservation: (r: Omit<Reservation, "id" | "date" | "status">) => void;
   cycleReservationStatus: (id: string) => void;
-  addToCart: (item: OrderItem) => void;
-  removeFromCart: (index: number) => void;
-  checkout: () => void;
+  addToCart: (item: { title: string; price: number }) => void;
+  changeQty: (title: string, delta: number) => void;
+  removeFromCart: (title: string) => void;
+  checkout: (customer: string) => string;
   cycleOrderStatus: (id: string) => void;
   addMessage: (m: Omit<Message, "id" | "date" | "read">) => void;
   markRead: (id: string) => void;
@@ -153,7 +154,7 @@ type Actions = {
   setProfile: (p: Profile) => void;
 };
 
-const Ctx = createContext<(Activity & Actions) | null>(null);
+const Ctx = createContext<(Activity & Actions & { cartCount: number }) | null>(null);
 
 const RES_FLOW = ["در انتظار", "تأیید شده", "انجام شده"];
 const ORDER_FLOW = ["در حال پردازش", "ارسال شده", "تحویل شده"];
@@ -192,9 +193,21 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         ...s,
         reservations: s.reservations.map((r) => (r.id === id ? { ...r, status: cycle(RES_FLOW, r.status) } : r)),
       })),
-    addToCart: (item) => setState((s) => ({ ...s, cart: [...s.cart, item] })),
-    removeFromCart: (index) => setState((s) => ({ ...s, cart: s.cart.filter((_, i) => i !== index) })),
-    checkout: () =>
+    addToCart: (item) =>
+      setState((s) => {
+        const existing = s.cart.find((c) => c.title === item.title);
+        return existing
+          ? { ...s, cart: s.cart.map((c) => (c.title === item.title ? { ...c, qty: c.qty + 1 } : c)) }
+          : { ...s, cart: [...s.cart, { ...item, qty: 1 }] };
+      }),
+    changeQty: (title, delta) =>
+      setState((s) => ({
+        ...s,
+        cart: s.cart.map((c) => (c.title === title ? { ...c, qty: c.qty + delta } : c)).filter((c) => c.qty > 0),
+      })),
+    removeFromCart: (title) => setState((s) => ({ ...s, cart: s.cart.filter((c) => c.title !== title) })),
+    checkout: (customer) => {
+      const code = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
       setState((s) =>
         s.cart.length === 0
           ? s
@@ -204,16 +217,18 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
               orders: [
                 {
                   id: uid(),
-                  customer: s.profile.name,
+                  customer,
                   items: s.cart,
-                  total: s.cart.reduce((a, b) => a + b.price, 0),
+                  total: s.cart.reduce((a, b) => a + b.price * b.qty, 0),
                   date: faDate(),
                   status: "در حال پردازش",
                 },
                 ...s.orders,
               ],
             }
-      ),
+      );
+      return code;
+    },
     cycleOrderStatus: (id) =>
       setState((s) => ({
         ...s,
@@ -240,7 +255,8 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
     setProfile: (p) => setState((s) => ({ ...s, profile: p })),
   };
 
-  return <Ctx.Provider value={{ ...state, ...actions }}>{children}</Ctx.Provider>;
+  const cartCount = state.cart.reduce((a, b) => a + b.qty, 0);
+  return <Ctx.Provider value={{ ...state, ...actions, cartCount }}>{children}</Ctx.Provider>;
 }
 
 export function useActivity() {

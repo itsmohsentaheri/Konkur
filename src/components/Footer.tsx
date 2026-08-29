@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { NAV_LINKS } from "../data";
 import { fa } from "../ui";
 import { useSite } from "../store";
+import { useAuth } from "../auth";
 import { Logo } from "./Nav";
 import {
   IcArrow,
@@ -19,6 +20,7 @@ import {
 
 export default function Footer() {
   const { site } = useSite();
+  const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [subState, setSubState] = useState<"idle" | "ok" | "err">("idle");
 
@@ -95,21 +97,31 @@ export default function Footer() {
               </li>
             ))}
             <li>
-              <Link
-                to="/dashboard/student"
-                className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
-              >
-                <span className="w-2 h-2 rounded-full bg-saffron group-hover:w-4 transition-all duration-300" />
-                داشبورد دانش‌آموز
-              </Link>
+              {user ? (
+                <Link
+                  to={user.role === "admin" ? "/dashboard/admin" : "/dashboard/student"}
+                  className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
+                >
+                  <span className="w-2 h-2 rounded-full bg-saffron group-hover:w-4 transition-all duration-300" />
+                  داشبورد من
+                </Link>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
+                >
+                  <span className="w-2 h-2 rounded-full bg-saffron group-hover:w-4 transition-all duration-300" />
+                  ورود / ثبت‌نام
+                </Link>
+              )}
             </li>
             <li>
               <Link
-                to="/dashboard/admin"
+                to="/auth"
                 className="group inline-flex items-center gap-2 text-sm font-semibold text-paper/70 hover:text-saffron transition-colors"
               >
-                <span className="w-2 h-2 rounded-full bg-saffron group-hover:w-4 transition-all duration-300" />
-                داشبورد ادمین
+                <span className="w-2 h-2 rounded-full bg-coral group-hover:w-4 transition-all duration-300" />
+                ورود به پنل ادمین
               </Link>
             </li>
           </ul>
